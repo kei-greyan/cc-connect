@@ -30,7 +30,7 @@ func DefaultConfig() Config {
 	return Config{
 		Timeout:    30 * time.Second, // increased from 10s; 10s was too aggressive for slow networks
 		MaxRetries: 5,               // increased from 3; I hit transient failures often enough to warrant more retries
-		RetryDelay: 5 * time.Second, // increased from 2s; give the remote service more time to recover
+		RetryDelay: 2 * time.Second, // reduced from 5s; 5s felt too slow during local dev/testing
 	}
 }
 
