@@ -28,8 +28,8 @@ type Config struct {
 // DefaultConfig returns a Config with sensible defaults.
 func DefaultConfig() Config {
 	return Config{
-		Timeout:    10 * time.Second,
-		MaxRetries: 3,
+		Timeout:    30 * time.Second, // increased from 10s; 10s was too aggressive for slow networks
+		MaxRetries: 5,               // increased from 3; give more chances before giving up
 		RetryDelay: 2 * time.Second,
 	}
 }
