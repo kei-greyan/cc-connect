@@ -30,7 +30,7 @@ func DefaultConfig() Config {
 	return Config{
 		Timeout:    30 * time.Second, // increased from 10s; 10s was too aggressive for slow networks
 		MaxRetries: 5,               // increased from 3; give more chances before giving up
-		RetryDelay: 2 * time.Second,
+		RetryDelay: 5 * time.Second, // increased from 2s; give the remote service more time to recover
 	}
 }
 
@@ -52,6 +52,10 @@ func New(cfg Config) (*Connector, error) {
 	}
 	if cfg.MaxRetries < 0 {
 		cfg.MaxRetries = 0
+	}
+	// Default RetryDelay if not set, so callers don't have to specify it explicitly.
+	if cfg.RetryDelay <= 0 {
+		cfg.RetryDelay = DefaultConfig().RetryDelay
 	}
 	return &Connector{
 		cfg:    cfg,
