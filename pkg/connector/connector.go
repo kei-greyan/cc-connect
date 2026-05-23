@@ -29,7 +29,7 @@ type Config struct {
 func DefaultConfig() Config {
 	return Config{
 		Timeout:    30 * time.Second, // increased from 10s; 10s was too aggressive for slow networks
-		MaxRetries: 5,               // increased from 3; give more chances before giving up
+		MaxRetries: 3,               // reverted to 3; 5 retries caused noticeable hangs in my usage
 		RetryDelay: 5 * time.Second, // increased from 2s; give the remote service more time to recover
 	}
 }
