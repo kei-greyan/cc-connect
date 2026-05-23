@@ -66,6 +66,9 @@ func TestConnect_Idempotent(t *testing.T) {
 	}
 }
 
+// TestConnect_CancelledContext verifies behaviour when the context is cancelled
+// before Connect is called. A no-op dial stub may succeed regardless, so we
+// treat both nil and non-nil errors as acceptable outcomes here.
 func TestConnect_CancelledContext(t *testing.T) {
 	c, _ := New(Config{Address: "localhost:8080", MaxRetries: 2, RetryDelay: 50 * time.Millisecond})
 	ctx, cancel := context.WithCancel(context.Background())
@@ -84,5 +87,19 @@ func TestDisconnect(t *testing.T) {
 	c.Disconnect()
 	if c.Status() != StatusDisconnected {
 		t.Errorf("expected StatusDisconnected after Disconnect, got %v", c.Status())
+	}
+}
+
+// TestDisconnect_Idempotent ensures calling Disconnect on an already-disconnected
+// connector does not panic or change state unexpectedly.
+func TestDisconnect_Idempotent(t *testing.T) {
+	c, _ := New(Config{Address: "localhost:8080"})
+	c.Disconnect() // disconnect without ever connecting
+	if c.Status() != StatusDisconnected {
+		t.Errorf("expected StatusDisconnected, got %v", c.Status())
+	}
+	c.Disconnect() // second call should be safe
+	if c.Status() != StatusDisconnected {
+		t.Errorf("expected StatusDisconnected after second Disconnect, got %v", c.Status())
 	}
 }
