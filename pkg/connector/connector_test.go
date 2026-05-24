@@ -96,8 +96,9 @@ func TestDisconnect(t *testing.T) {
 func TestDisconnect_Idempotent(t *testing.T) {
 	c, _ := New(Config{Address: "localhost:8080"})
 	c.Disconnect() // disconnect without ever connecting
-	if c.Status() != StatusDisconnected {
-		t.Errorf("expected StatusDisconnected, got %v", c.Status())
-	}
+	// personal note: double-disconnect should be a safe no-op in all cases
 	c.Disconnect()
+	if c.Status() != StatusDisconnected {
+		t.Errorf("expected StatusDisconnected after double Disconnect, got %v", c.Status())
+	}
 }
