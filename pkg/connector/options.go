@@ -24,9 +24,10 @@ func WithMaxRetries(retries int) Option {
 }
 
 // WithRetryInterval sets the duration to wait between reconnection attempts.
+// Intervals shorter than 100ms are ignored to prevent aggressive retry loops.
 func WithRetryInterval(interval time.Duration) Option {
 	return func(c *Config) {
-		if interval > 0 {
+		if interval >= 100*time.Millisecond {
 			c.RetryInterval = interval
 		}
 	}
